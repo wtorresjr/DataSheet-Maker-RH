@@ -68,17 +68,24 @@
   margin-bottom: 6px;
 }
 
-/* ---- Skills flow in columns below ---- */
+/* ---- Skills flow in columns below ----
+   Two regions: normal-width programs, and a denser narrow region for programs
+   that run infrequently (low trial count) and have short target labels. */
 .skills-region {
-  column-count: 4;
   column-gap: 5px;
+}
+.skills-wide {
+  column-count: 4;
+}
+.skills-narrow {
+  column-width: 1.55in;
 }
 
 /* ---- Card (a program container) ---- */
 .card {
   border: 1px solid #000;
-  padding: 3px 4px 4px;
-  margin-bottom: 5px;
+  padding: 2px 3px 3px;
+  margin-bottom: 4px;
 }
 /* Behavior cards stay whole; skill cards may flow across columns/pages so
    large programs pack tightly (individual target rows never split). */
@@ -90,15 +97,15 @@
   font-weight: 700;
   font-size: 9.5px;
   border-bottom: 1px solid #000;
-  padding-bottom: 2px;
-  margin-bottom: 3px;
+  padding-bottom: 1px;
+  margin-bottom: 2px;
   break-after: avoid;
   page-break-after: avoid;
 }
 .card-sub {
   font-size: 8px;
   color: #333;
-  margin-bottom: 3px;
+  margin-bottom: 2px;
 }
 
 /* ---- Cells (graph-paper look) ---- */
@@ -110,50 +117,56 @@
 
 /* Trial-by-trial target: label + row of +/- cells + additional trials box */
 .target {
-  margin-bottom: 4px;
+  margin-bottom: 2px;
   break-inside: avoid;
   page-break-inside: avoid;
 }
 .target-label {
   font-size: 8.5px;
-  margin-bottom: 2px;
+  margin-bottom: 1px;
 }
 .trial-wrap {
   display: flex;
   align-items: stretch;
   gap: 6px;
 }
+/* Fixed-size trial cells: a target only uses the space its trials need — a low
+   trial count no longer stretches into big boxes — and many trials wrap. */
 .trial-grid {
-  display: grid;
-  grid-template-columns: repeat(var(--cells), 1fr);
-  gap: 0;
-  flex: 1 1 auto;
-  align-content: end;
-  /* draw as a single joined grid: collapse doubled borders */
+  display: flex;
+  flex-wrap: wrap;
+  flex: 0 1 auto;
+  align-content: flex-start;
 }
 .trial-grid .cell {
-  border-right-width: 0;
-  min-height: 15px;
+  width: 13px;
+  height: 13px;
+  aspect-ratio: auto;
+  /* collapse shared borders between neighbours, including across wraps */
+  margin: 0 -1px -1px 0;
 }
-.trial-grid .cell:last-child {
-  border-right-width: 1px;
-}
+/* Additional-trials box fills whatever width is left over. Label sits inline
+   (left of the box) so the target row stays one cell tall. */
 .addl {
-  flex: 0 0 26%;
+  flex: 1 1 auto;
+  min-width: 0.55in;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
+  gap: 3px;
 }
 .addl-label {
   font-size: 6.5px;
   color: #333;
   line-height: 1;
-  margin-bottom: 1px;
   white-space: nowrap;
+  flex: 0 0 auto;
 }
 .addl-box {
   border: 1px solid #000;
   flex: 1 1 auto;
-  min-height: 15px;
+  align-self: stretch;
+  min-height: 13px;
 }
 
 /* Plain box row (intervals, task-analysis steps).
@@ -164,8 +177,8 @@
   flex-wrap: wrap;
 }
 .box-row .cell {
-  width: 15px;
-  height: 15px;
+  width: 13px;
+  height: 13px;
   aspect-ratio: auto;
   /* collapse shared borders between neighbours, including across wraps */
   margin: 0 -1px -1px 0;

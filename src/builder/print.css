@@ -33,8 +33,13 @@
 
   /* More columns fit in landscape on paper */
   .skills-region {
-    column-count: 4;
     column-gap: 6px;
+  }
+  .skills-wide {
+    column-count: 4;
+  }
+  .skills-narrow {
+    column-width: 1.5in;
   }
 
   /* band widths are driven by the flex layout in sheet.css */

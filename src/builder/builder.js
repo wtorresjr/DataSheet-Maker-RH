@@ -295,12 +295,33 @@
       el.sheet.appendChild(band);
     }
 
-    // Skills region (multicolumn)
+    // Skills. Programs that run infrequently (low trial count) AND have short
+    // target labels go in a denser narrow-column region so more fit per row;
+    // everything else keeps the normal 4-column width. (Long labels would just
+    // wrap taller in a narrow column, so they're excluded.)
     if (skills.length) {
-      const region = document.createElement("section");
-      region.className = "skills-region";
-      skills.forEach((p) => region.appendChild(skillCard(p)));
-      el.sheet.appendChild(region);
+      const NARROW_MAX_TRIALS = 4;
+      const NARROW_MAX_LABEL = 30;
+      const isNarrow = (p) => {
+        if (norm(p.type) !== TYPE.TRIAL) return false;
+        const n = p._params.minTrials || DEFAULTS.minTrials;
+        if (n > NARROW_MAX_TRIALS) return false;
+        const labels = p.targets.filter((_, i) => p._targetsEnabled[i]);
+        if (!labels.length) return false;
+        return labels.every((l) => l.length <= NARROW_MAX_LABEL);
+      };
+      const wide = skills.filter((p) => !isNarrow(p));
+      const narrow = skills.filter((p) => isNarrow(p));
+
+      const addRegion = (cls, items) => {
+        if (!items.length) return;
+        const region = document.createElement("section");
+        region.className = `skills-region ${cls}`;
+        items.forEach((p) => region.appendChild(skillCard(p)));
+        el.sheet.appendChild(region);
+      };
+      addRegion("skills-wide", wide);
+      addRegion("skills-narrow", narrow);
     }
   }
 
