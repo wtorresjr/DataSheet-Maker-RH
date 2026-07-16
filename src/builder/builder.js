@@ -268,7 +268,7 @@
     head.className = "sheet-head";
     head.innerHTML =
       `<span class="date-field">Date: <span class="date-line"></span></span>` +
-      `<span class="client-field">Client: ${escapeHtml(state.data.clientId)}</span>`;
+      `<span class="client-field">Client: <span class="client-line"></span></span>`;
     el.sheet.appendChild(head);
 
     // Behaviors band (full width, top). Split into per-type sub-bands:
@@ -282,8 +282,7 @@
       const inType = (p, ...types) => types.includes(norm(p.type));
       const subBands = [
         { cls: "bhv-tally", items: behaviors.filter((p) => inType(p, TYPE.FREQUENCY, TYPE.RATE)) },
-        { cls: "bhv-interval", items: behaviors.filter((p) => inType(p, TYPE.INTERVAL)) },
-        { cls: "bhv-duration", items: behaviors.filter((p) => inType(p, TYPE.DURATION)) },
+        { cls: "bhv-timing", items: behaviors.filter((p) => inType(p, TYPE.INTERVAL, TYPE.DURATION)) },
       ];
       subBands.forEach(({ cls, items }) => {
         if (!items.length) return;

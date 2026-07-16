@@ -51,7 +51,9 @@
   .addl-box,
   .card-title,
   .slot-line,
-  .date-line {
+  .date-line,
+  .client-line,
+  .behaviors-band {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }

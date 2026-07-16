@@ -17,7 +17,8 @@
   font-weight: 600;
   margin-bottom: 6px;
 }
-.date-line {
+.date-line,
+.client-line {
   display: inline-block;
   width: 180px;
   border-bottom: 1px solid #000;
@@ -27,6 +28,8 @@
    One sub-band per behavior type (built in buildSheet), stacked vertically. */
 .behaviors-band {
   margin-bottom: 8px;
+  padding-bottom: 7px;
+  border-bottom: 2.5px solid #000; /* bold divider between behaviors and skills */
 }
 .bhv-sub {
   margin-bottom: 6px;
@@ -37,8 +40,8 @@
   overflow: hidden;
 }
 
-/* Frequency + Rate: uniform-height tally boxes at half width, in a flex row.
-   Same height means no vertical dead space; ~10 half-cards fit per row. */
+/* Frequency + Rate: uniform-height tally boxes, half-width minimum but they
+   GROW to divide the whole row evenly — no trailing gap on the right. */
 .bhv-tally {
   display: flex;
   flex-wrap: wrap;
@@ -46,8 +49,8 @@
   gap: 6px;
 }
 .bhv-tally .card {
-  flex: 0 0 auto;
-  width: calc((100% - 9 * 6px) / 10);
+  flex: 1 1 calc((100% - 9 * 6px) / 10); /* basis ~half width, then grow to fill */
+  min-width: calc((100% - 9 * 6px) / 10);
   display: flex;
   flex-direction: column;
 }
@@ -55,15 +58,15 @@
   flex: 1 1 auto;
 }
 
-/* Interval + Duration: masonry multicolumns. Short cards stack up under tall
-   ones (a many-interval card no longer leaves empty space beside it). */
-.bhv-interval,
-.bhv-duration {
+/* Interval + Duration together in one masonry multicolumn. Short interval
+   cards and duration cards stack up to fill each other's gaps (a many-interval
+   card no longer leaves empty space beside it, and duration cards slot into
+   the leftover column space instead of forming a half-empty block). */
+.bhv-timing {
   column-width: 2.1in;
   column-gap: 6px;
 }
-.bhv-interval .card,
-.bhv-duration .card {
+.bhv-timing .card {
   width: 100%;
   margin-bottom: 6px;
 }
@@ -170,18 +173,23 @@
 }
 
 /* Plain box row (intervals, task-analysis steps).
-   Fixed-size cells that wrap to the next line within the card, so a program
-   with many intervals/steps grows in height instead of shrinking its cells. */
+   Auto-fit grid: cells stretch to fill the card width when there are few, and
+   wrap to uniform rows when there are many. Borders drawn on the container
+   (top/left) + each cell (right/bottom) so lines never double up. */
 .box-row {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14px, 1fr));
+  border-top: 1px solid #000;
+  border-left: 1px solid #000;
 }
 .box-row .cell {
-  width: 13px;
-  height: 13px;
+  border: none;
+  border-right: 1px solid #000;
+  border-bottom: 1px solid #000;
+  width: auto;
+  height: 14px;
   aspect-ratio: auto;
-  /* collapse shared borders between neighbours, including across wraps */
-  margin: 0 -1px -1px 0;
+  margin: 0;
 }
 
 /* Duration slots: numbered write-in lines laid out in 3 columns, filled
