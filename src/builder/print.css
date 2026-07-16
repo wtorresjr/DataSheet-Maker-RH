@@ -1,0 +1,63 @@
+/* RH DataSheet Maker — print rules (landscape, tight, fidelity to paper). */
+@page {
+  size: landscape;
+  margin: 0.3in;
+}
+
+@media print {
+  html,
+  body {
+    background: #fff;
+  }
+
+  /* Hide all on-screen chrome */
+  .toolbar,
+  .params-view {
+    display: none !important;
+  }
+
+  .preview-view {
+    padding: 0;
+    display: block;
+  }
+
+  .sheet {
+    max-width: none;
+    width: 100%;
+    padding: 0;
+    border: none;
+    box-shadow: none;
+    /* denser type for paper */
+    font-size: 8px;
+  }
+
+  /* More columns fit in landscape on paper */
+  .skills-region {
+    column-count: 4;
+    column-gap: 6px;
+  }
+
+  .behaviors-band {
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  /* Force crisp hairlines regardless of print color settings */
+  .cell,
+  .card,
+  .tally-box,
+  .addl-box,
+  .card-title,
+  .slot-line,
+  .date-line {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Keep behavior cards and individual target rows intact; allow large skill
+     program cards to flow across columns/pages for tight packing. */
+  .behavior-card,
+  .target {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}

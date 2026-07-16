@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RH DataSheet Maker</title>
+    <link rel="stylesheet" href="builder.css" />
+    <link rel="stylesheet" href="sheet.css" />
+    <link rel="stylesheet" href="print.css" media="print" />
+  </head>
+  <body>
+    <!-- Top toolbar (hidden when printing) -->
+    <header class="toolbar" id="toolbar">
+      <div class="toolbar-left">
+        <strong>RH DataSheet Maker</strong>
+        <span id="meta" class="meta"></span>
+      </div>
+      <div class="toolbar-right">
+        <!-- Params step -->
+        <button id="btn-build" class="btn btn-primary">Build Data Sheet →</button>
+        <!-- Preview step -->
+        <button id="btn-back" class="btn" hidden>← Parameters</button>
+        <button id="btn-print" class="btn btn-primary" hidden>Print</button>
+        <button id="btn-pdf" class="btn" hidden>Save as PDF</button>
+      </div>
+    </header>
+
+    <!-- Parameters step -->
+    <main id="params-view" class="params-view">
+      <div id="params-empty" class="empty" hidden>
+        <p>No scraped data found.</p>
+        <p>
+          Open a Raven Health care-plan page and click
+          <em>Create Data Sheet</em>, or
+          <button id="btn-sample" class="btn">Load sample data</button>
+          to preview the builder.
+        </p>
+      </div>
+      <div id="params-body"></div>
+    </main>
+
+    <!-- Preview step -->
+    <main id="preview-view" class="preview-view" hidden>
+      <div id="sheet" class="sheet"></div>
+    </main>
+
+    <script src="sample-data.js"></script>
+    <script src="builder.js"></script>
+  </body>
+</html>

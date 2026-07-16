@@ -1,0 +1,160 @@
+/* RH DataSheet Maker — the printed sheet's visual language.
+   Applies both on screen (preview) and in print, so screen == paper. */
+
+.sheet {
+  color: #000;
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-size: 9px;
+  line-height: 1.15;
+}
+
+/* ---- Header (date / client) ---- */
+.sheet-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.date-line {
+  display: inline-block;
+  width: 180px;
+  border-bottom: 1px solid #000;
+}
+
+/* ---- Behaviors band across the top ---- */
+.behaviors-band {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 5px;
+  margin-bottom: 6px;
+}
+
+/* ---- Skills flow in columns below ---- */
+.skills-region {
+  column-count: 4;
+  column-gap: 5px;
+}
+
+/* ---- Card (a program container) ---- */
+.card {
+  border: 1px solid #000;
+  padding: 3px 4px 4px;
+  margin-bottom: 5px;
+}
+/* Behavior cards stay whole; skill cards may flow across columns/pages so
+   large programs pack tightly (individual target rows never split). */
+.behavior-card {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+.card-title {
+  font-weight: 700;
+  font-size: 9.5px;
+  border-bottom: 1px solid #000;
+  padding-bottom: 2px;
+  margin-bottom: 3px;
+  break-after: avoid;
+  page-break-after: avoid;
+}
+.card-sub {
+  font-size: 8px;
+  color: #333;
+  margin-bottom: 3px;
+}
+
+/* ---- Cells (graph-paper look) ---- */
+.cell {
+  border: 1px solid #000;
+  aspect-ratio: 1 / 1;
+  display: block;
+}
+
+/* Trial-by-trial target: label + row of +/- cells + additional trials box */
+.target {
+  margin-bottom: 4px;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+.target-label {
+  font-size: 8.5px;
+  margin-bottom: 2px;
+}
+.trial-wrap {
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
+}
+.trial-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--cells), 1fr);
+  gap: 0;
+  flex: 1 1 auto;
+  align-content: end;
+  /* draw as a single joined grid: collapse doubled borders */
+}
+.trial-grid .cell {
+  border-right-width: 0;
+  min-height: 15px;
+}
+.trial-grid .cell:last-child {
+  border-right-width: 1px;
+}
+.addl {
+  flex: 0 0 26%;
+  display: flex;
+  flex-direction: column;
+}
+.addl-label {
+  font-size: 6.5px;
+  color: #333;
+  line-height: 1;
+  margin-bottom: 1px;
+  white-space: nowrap;
+}
+.addl-box {
+  border: 1px solid #000;
+  flex: 1 1 auto;
+  min-height: 15px;
+}
+
+/* Plain box row (intervals, task-analysis steps) */
+.box-row {
+  display: grid;
+  grid-template-columns: repeat(var(--cells), 1fr);
+}
+.box-row .cell {
+  border-right-width: 0;
+}
+.box-row .cell:last-child {
+  border-right-width: 1px;
+}
+
+/* Duration slots: numbered write-in lines */
+.slot-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.slot-row {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+.slot-label {
+  font-size: 8px;
+  width: 14px;
+  flex: 0 0 auto;
+}
+.slot-line {
+  flex: 1 1 auto;
+  border-bottom: 1px solid #000;
+  height: 12px;
+}
+
+/* Tally box (Frequency / Rate): large blank area, ~150 conservative marks */
+.tally-box {
+  border: 1px solid #000;
+  min-height: 95px;
+}
