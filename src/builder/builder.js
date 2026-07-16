@@ -251,7 +251,15 @@
   function buildSheet() {
     el.sheet.innerHTML = "";
     const programs = state.data.programs;
-    const behaviors = programs.filter((p) => isBehavior(p.type));
+    // Group behavior cards by type (Frequency, Rate, Interval, Duration) so
+    // like widgets sit together in the band; keep scrape order within a type.
+    const typeRank = (t) => {
+      const i = BEHAVIOR_ORDER.findIndex((g) => g.key === norm(t));
+      return i === -1 ? BEHAVIOR_ORDER.length : i;
+    };
+    const behaviors = programs
+      .filter((p) => isBehavior(p.type))
+      .sort((a, b) => typeRank(a.type) - typeRank(b.type));
     // Skills the user excluded are left off the sheet entirely.
     const skills = programs.filter((p) => !isBehavior(p.type) && p._enabled);
 
@@ -263,11 +271,27 @@
       `<span class="client-field">Client: ${escapeHtml(state.data.clientId)}</span>`;
     el.sheet.appendChild(head);
 
-    // Behaviors band (full width, top)
+    // Behaviors band (full width, top). Split into per-type sub-bands:
+    //  - Frequency + Rate: half-width tally boxes in a uniform-height flex row.
+    //  - Interval / Duration: masonry multicolumns so short cards stack up
+    //    under tall ones (e.g. a many-interval card) and fill the dead space.
     if (behaviors.length) {
       const band = document.createElement("section");
       band.className = "behaviors-band";
-      behaviors.forEach((p) => band.appendChild(behaviorCard(p)));
+
+      const inType = (p, ...types) => types.includes(norm(p.type));
+      const subBands = [
+        { cls: "bhv-tally", items: behaviors.filter((p) => inType(p, TYPE.FREQUENCY, TYPE.RATE)) },
+        { cls: "bhv-interval", items: behaviors.filter((p) => inType(p, TYPE.INTERVAL)) },
+        { cls: "bhv-duration", items: behaviors.filter((p) => inType(p, TYPE.DURATION)) },
+      ];
+      subBands.forEach(({ cls, items }) => {
+        if (!items.length) return;
+        const sub = document.createElement("div");
+        sub.className = `bhv-sub ${cls}`;
+        items.forEach((p) => sub.appendChild(behaviorCard(p)));
+        band.appendChild(sub);
+      });
       el.sheet.appendChild(band);
     }
 
@@ -293,6 +317,13 @@
   function behaviorCard(program) {
     const t = norm(program.type);
     const card = cardShell(program, "behavior-card");
+    // Type modifier class drives per-type card width (Frequency is half-width).
+    const typeClass =
+      t === TYPE.FREQUENCY ? "bc-freq"
+      : t === TYPE.RATE ? "bc-rate"
+      : t === TYPE.INTERVAL ? "bc-interval"
+      : "bc-duration";
+    card.classList.add(typeClass);
 
     if (t === TYPE.FREQUENCY || t === TYPE.RATE) {
       const sub = document.createElement("div");

@@ -23,11 +23,48 @@
   border-bottom: 1px solid #000;
 }
 
-/* ---- Behaviors band across the top ---- */
+/* ---- Behaviors band across the top ----
+   One sub-band per behavior type (built in buildSheet), stacked vertically. */
 .behaviors-band {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 5px;
+  margin-bottom: 8px;
+}
+.bhv-sub {
+  margin-bottom: 6px;
+}
+.behaviors-band .card {
+  break-inside: avoid;
+  page-break-inside: avoid;
+  overflow: hidden;
+}
+
+/* Frequency + Rate: uniform-height tally boxes at half width, in a flex row.
+   Same height means no vertical dead space; ~10 half-cards fit per row. */
+.bhv-tally {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch; /* equal-height cards; tally boxes fill the row height */
+  gap: 6px;
+}
+.bhv-tally .card {
+  flex: 0 0 auto;
+  width: calc((100% - 9 * 6px) / 10);
+  display: flex;
+  flex-direction: column;
+}
+.bhv-tally .tally-box {
+  flex: 1 1 auto;
+}
+
+/* Interval + Duration: masonry multicolumns. Short cards stack up under tall
+   ones (a many-interval card no longer leaves empty space beside it). */
+.bhv-interval,
+.bhv-duration {
+  column-width: 2.1in;
+  column-gap: 6px;
+}
+.bhv-interval .card,
+.bhv-duration .card {
+  width: 100%;
   margin-bottom: 6px;
 }
 
@@ -119,32 +156,37 @@
   min-height: 15px;
 }
 
-/* Plain box row (intervals, task-analysis steps) */
+/* Plain box row (intervals, task-analysis steps).
+   Fixed-size cells that wrap to the next line within the card, so a program
+   with many intervals/steps grows in height instead of shrinking its cells. */
 .box-row {
-  display: grid;
-  grid-template-columns: repeat(var(--cells), 1fr);
+  display: flex;
+  flex-wrap: wrap;
 }
 .box-row .cell {
-  border-right-width: 0;
-}
-.box-row .cell:last-child {
-  border-right-width: 1px;
+  width: 15px;
+  height: 15px;
+  aspect-ratio: auto;
+  /* collapse shared borders between neighbours, including across wraps */
+  margin: 0 -1px -1px 0;
 }
 
-/* Duration slots: numbered write-in lines */
+/* Duration slots: numbered write-in lines laid out in 3 columns, filled
+   column-major (e.g. 15 slots -> 3 columns of 5) to use the width better. */
 .slot-list {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+  columns: 3;
+  column-gap: 8px;
 }
 .slot-row {
   display: flex;
   align-items: baseline;
   gap: 4px;
+  break-inside: avoid;
+  margin-bottom: 2px;
 }
 .slot-label {
   font-size: 8px;
-  width: 14px;
+  width: 16px;
   flex: 0 0 auto;
 }
 .slot-line {

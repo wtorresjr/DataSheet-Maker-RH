@@ -37,9 +37,7 @@
     column-gap: 6px;
   }
 
-  .behaviors-band {
-    grid-template-columns: repeat(5, 1fr);
-  }
+  /* band widths are driven by the flex layout in sheet.css */
 
   /* Force crisp hairlines regardless of print color settings */
   .cell,
