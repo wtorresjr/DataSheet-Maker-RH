@@ -1,0 +1,14 @@
+{
+  "name": "rh-datasheet-maker",
+  "version": "2.0.0",
+  "description": "Desktop app that reads Raven Health treatment plans and builds printable session data sheets.",
+  "main": "src/main/main.js",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "diagnose": "electron tools/diagnose.js"
+  },
+  "devDependencies": {
+    "electron": "^44.3.0"
+  }
+}

@@ -1,6 +1,7 @@
-// RH DataSheet Maker — builder page logic.
-// Two steps: (1) Parameters, (2) Preview. Data comes from chrome.storage.local
-// (written by the content script) or the dev "Load sample data" button.
+// RH DataSheet Maker — builder logic.
+// Two steps: (1) Parameters, (2) Preview. Data comes from the last plan the
+// main process persisted, from a fresh extraction handed over by app.js, or
+// from the dev "Load sample data" button.
 (function () {
   "use strict";
 
@@ -43,17 +44,34 @@
   async function load() {
     let payload = null;
     try {
-      const res = await chrome.storage.local.get("rhDataSheet");
-      payload = res && res.rhDataSheet;
+      payload = await window.rhAPI.getPlan();
     } catch (e) {
-      // Not in an extension context (or storage unavailable) — fall through.
-      console.warn("storage.local unavailable:", e);
+      // No bridge (or nothing stored yet) — fall through to the empty state.
+      console.warn("could not load the last plan:", e);
     }
     if (payload && Array.isArray(payload.programs) && payload.programs.length) {
       initData(payload);
     } else {
       el.paramsEmpty.hidden = false;
+      syncBuildEnabled();
     }
+  }
+
+  // "Build Data Sheet" acts on state.data, so it must be inert without one.
+  function syncBuildEnabled() {
+    el.btnBuild.disabled = !state.data;
+  }
+
+  // Back to a blank slate: no plan, no params, no sheet. Paired with
+  // rhAPI.clearPlan() by app.js so the next launch also starts empty.
+  function reset() {
+    state.data = null;
+    el.paramsBody.innerHTML = "";
+    el.sheet.innerHTML = "";
+    el.meta.textContent = "";
+    el.paramsEmpty.hidden = false;
+    showParams();
+    syncBuildEnabled();
   }
 
   function initData(payload) {
@@ -66,6 +84,7 @@
     });
     el.paramsEmpty.hidden = true;
     el.meta.textContent = `Client ${payload.clientId} · ${payload.programs.length} programs`;
+    syncBuildEnabled();
     renderParams();
   }
 
@@ -484,8 +503,10 @@
   // ---- Wire up ------------------------------------------------------------
   el.btnBuild.addEventListener("click", showPreview);
   el.btnBack.addEventListener("click", showParams);
-  el.btnPrint.addEventListener("click", () => window.print());
-  el.btnPdf.addEventListener("click", () => window.print());
+  el.btnPrint.addEventListener("click", () => window.rhAPI.print());
+  el.btnPdf.addEventListener("click", () =>
+    window.rhAPI.savePdf(state.data && state.data.clientId),
+  );
   if (el.btnSample) {
     el.btnSample.addEventListener("click", () => {
       const programs = (window.RH_SAMPLE_DATA || []).map((p) => ({
@@ -500,6 +521,9 @@
       });
     });
   }
+
+  // The seam app.js uses to hand over a freshly extracted plan.
+  window.RHBuilder = { initData, showParams, reset };
 
   load();
 })();

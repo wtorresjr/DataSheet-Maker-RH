@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RH DataSheet Maker</title>
+    <link rel="stylesheet" href="app.css" />
+    <link rel="stylesheet" href="builder/builder.css" />
+    <link rel="stylesheet" href="builder/sheet.css" />
+    <link rel="stylesheet" href="builder/print.css" media="print" />
+  </head>
+  <body>
+    <!-- Top toolbar (hidden when printing) -->
+    <header class="toolbar" id="toolbar">
+      <div class="toolbar-left">
+        <strong>RH DataSheet Maker</strong>
+        <nav class="tabs">
+          <button id="tab-raven" class="tab is-active">Raven</button>
+          <button id="tab-builder" class="tab">Builder</button>
+        </nav>
+        <span id="meta" class="meta"></span>
+        <span id="status" class="status"></span>
+      </div>
+      <div class="toolbar-right">
+        <!-- Shown on the Raven tab. app.js owns this group. -->
+        <div id="raven-actions" class="btn-group">
+          <button id="btn-scrape" class="btn btn-primary" disabled>
+            Create Data Sheet
+          </button>
+        </div>
+        <!-- Shown on the Builder tab. builder.js owns the buttons inside. -->
+        <div id="builder-actions" class="btn-group" hidden>
+          <button id="btn-build" class="btn btn-primary">Build Data Sheet →</button>
+          <button id="btn-back" class="btn" hidden>← Parameters</button>
+          <button id="btn-print" class="btn btn-primary" hidden>Print</button>
+          <button id="btn-pdf" class="btn" hidden>Save as PDF</button>
+          <button id="btn-new" class="btn">New Sheet</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Raven browser view -->
+    <div id="raven-view" class="raven-view">
+      <webview
+        id="raven"
+        src="https://app.ravenhealth.com"
+        partition="persist:raven"
+        allowpopups
+      ></webview>
+    </div>
+
+    <!-- Builder view: params -> preview, switched from within builder.js -->
+    <div id="builder-view" class="builder-view" hidden>
+      <main id="params-view" class="params-view">
+        <div id="params-empty" class="empty" hidden>
+          <p>No plan loaded.</p>
+          <p>
+            Open a client's care plan in the <em>Raven</em> tab and click
+            <em>Create Data Sheet</em>, or
+            <button id="btn-sample" class="btn">Load sample data</button>
+            to preview the builder.
+          </p>
+        </div>
+        <div id="params-body"></div>
+      </main>
+
+      <main id="preview-view" class="preview-view" hidden>
+        <div id="sheet" class="sheet"></div>
+      </main>
+    </div>
+
+    <script src="builder/sample-data.js"></script>
+    <script src="builder/builder.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

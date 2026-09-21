@@ -5,13 +5,24 @@
 }
 
 @media print {
+  /* Unwind the app shell's full-height flex layout (app.css) — otherwise the
+     sheet is clipped to one screen's worth of a scroll container. */
   html,
   body {
+    height: auto;
+    overflow: visible;
     background: #fff;
   }
+  body {
+    display: block;
+  }
+  .builder-view {
+    overflow: visible;
+  }
 
-  /* Hide all on-screen chrome */
+  /* Hide all on-screen chrome, the embedded browser included */
   .toolbar,
+  .raven-view,
   .params-view {
     display: none !important;
   }
